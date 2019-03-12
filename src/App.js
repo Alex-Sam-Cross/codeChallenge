@@ -37,6 +37,7 @@ class App extends Component {
 
     //pagination
     changePage(event){
+        //display the n'th section of the full array in the displayList
         let pageNumber = (event.target.innerHTML - 1)
         this.setState({
             displayList : this.state.paginatedList[pageNumber],
@@ -44,9 +45,9 @@ class App extends Component {
         })
 
     }
+    //switch section of details is on dispaly on buttons clicked.
     detailsTabHandler(event){
-        clearInterval(this.interval)
-        let selected = event.target.innerHTML
+        let selected = event.target.innerHTML;
         if (selected === 'Details'){
             this.setState({
                 currentDDS : this.state.currentDetails
@@ -61,11 +62,14 @@ class App extends Component {
             })
         }
     }
+    //populate states for details desplay
     selectionHandler(event){
+        //populate currentSelections array by filtering on selected data ID
         let  dataNodeID = event.target.parentNode.id;
         this.setState({
             currentSelection: this.state.list.filter(list => list._id === dataNodeID )
         });
+        // populate states from new currentSelections array
         let populateCurrentSelection  = (currentSelection) => {
             if (currentSelection.length > 0) {
                 var description = currentSelection[0].description,
@@ -81,6 +85,7 @@ class App extends Component {
                 })
             }
         }
+        //waiting for currentSelection state to update before updating more states with it
         setTimeout(() => {
             populateCurrentSelection(this.state.currentSelection);
             document.getElementsByClassName('detailsDisplay')[0].style.visibility = 'visible';
@@ -98,12 +103,13 @@ class App extends Component {
     componentDidMount(){
         const itemsPerPage = this.state.itemsPerPage
         const items = this.state.list
-
+        //splitting array its smaller arrays all x Items long
         var paginatedList = items.map(function(e,i){
             return i % itemsPerPage === 0 ? items.slice(i , i+itemsPerPage) : null; 
         }).filter(function(e){ 
            return e; 
         });
+        //update displayList with the first of the new arrays for display (page 0)
         this.setState({
             paginatedList : paginatedList,
             displayList : paginatedList[0]
